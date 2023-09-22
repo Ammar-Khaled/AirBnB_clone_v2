@@ -50,3 +50,7 @@ class FileStorage:
         """delete obj from __objects dict if it's inside."""
         if obj:
             del FileStorage.__objects[obj.objectKey]
+
+    def close(self):
+        """Call reload() method for deserializing the JSON file to objects."""
+        self.reload()

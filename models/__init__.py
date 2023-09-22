@@ -23,10 +23,11 @@ def initModelsAndStorage():
     from models.review import Review
 
     general_injector.register(Base, BaseModel)
-    injector.register(User, Place, State, City, Amenity, Review)
+    injector.register(User, Place, State, City, Amenity, Review, Base, BaseModel)
 
     storage.reload()
 
+initModelsAndStorage()
 
 if (environ.get('HBNB_TYPE_STORAGE') == 'db'):
     from models.engine.db_storage import DBStorage
