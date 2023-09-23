@@ -11,6 +11,7 @@ all City objects linked to the State sorted by name (A->Z)
 
 from models import storage
 from models.state import State
+from models.city import City
 from flask import Flask, render_template
 
 app = Flask(__name__)
@@ -25,11 +26,7 @@ def teardown_session(exception):
 @app.route("/cities_by_states", strict_slashes=False)
 def cities_by_states():
     states_list = storage.all(State).values()
-    cities_by_states = {}
-    for state in states_list:
-        cities_by_states[state] = state.cities
-    return render_template('7-states_list.html', states_list=states_list,
-                           cities_by_states=cities_by_states)
+    return render_template('7-states_list.html', states_list=states_list)
 
 
 if __name__ == '__main__':
