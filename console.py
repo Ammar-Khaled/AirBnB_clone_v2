@@ -3,6 +3,15 @@
 import cmd
 import sys
 import models
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+from models import tables
+from models import classes
 
 
 def read_next_string_token(line):
@@ -179,11 +188,11 @@ class HBNBCommand(cmd.Cmd):
 
         cls, _, args = args.partition(" ")
 
-        if not models.injector.hasClass(cls):
+        if cls not in models.tables:
             print("** class doesn't exist **")
             return
 
-        cls = models.injector[cls]
+        cls = models.classes[cls]
         new_instance = cls()
         args = tokenize_args(args)
 
@@ -230,7 +239,7 @@ class HBNBCommand(cmd.Cmd):
         c_name, _, c_id = args.partition(" ")
         c_id = c_id.strip()
 
-        if not models.injector.hasClass(c_name):
+        if c_name not in models.tables:
             print("** class doesn't exist **")
             return
 
@@ -238,7 +247,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        BaseModel = models.general_injector['BaseModel']
+        BaseModel = models.classes['BaseModel']
         all_objs = models.storage.all(c_name)
         try:
             obj = all_objs[BaseModel.generateObjectKey(c_name, c_id)]
@@ -261,7 +270,7 @@ class HBNBCommand(cmd.Cmd):
         c_name, _, c_id = args.partition(" ")
         c_id = c_id.strip()
 
-        if not models.injector.hasClass(c_name):
+        if c_name not in models.tables:
             print("** class doesn't exist **")
             return
 
@@ -271,7 +280,7 @@ class HBNBCommand(cmd.Cmd):
 
         obj = None
         try:
-            BaseModel = models.general_injector['BaseModel']
+            BaseModel = models.classes['BaseModel']
             all_objs = models.storage.all(c_name)
             key = BaseModel.generateObjectKey(c_name, c_id)
             obj = all_objs[key]
@@ -292,7 +301,7 @@ class HBNBCommand(cmd.Cmd):
 
         if args:
             args = args.strip()
-            if args not in models.injector.classes:
+            if args not in models.tables:
                 print("** class doesn't exist **")
                 return
         else:
@@ -327,7 +336,7 @@ class HBNBCommand(cmd.Cmd):
         # isolate class_name from id/args, ex: (<cls>, delim, <id/args>)
         c_name, _, args = args.partition(" ")
 
-        if not models.injector.hasClass(c_name):  # class name invalid
+        if c_name not in models.tables:  # class name invalid
             print("** class doesn't exist **")
             return
 
@@ -339,7 +348,7 @@ class HBNBCommand(cmd.Cmd):
         c_id, _, args = args.partition(" ")
 
         # generate key from class and id
-        BaseModel = models.general_injector['BaseModel']
+        BaseModel = models.classes['BaseModel']
         key = BaseModel.generateObjectKey(c_name, c_id)
 
         all_objs = models.storage.all(c_name)
@@ -429,7 +438,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_classes(self, _):
         """ Lists all allowed classes """
-        print([key for key in models.injector.keys])
+        print([key for key in models.tables])
 
     def help_classes(self):
         """ Help information for the classes command """
@@ -443,11 +452,11 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        if not models.injector.hasClass(arg):
+        if arg not in models.tables:
             print("** class doesn't exist **")
             return
 
-        req_attrs = models.injector[arg].getRequiredAttributes()
+        req_attrs = models.classes[arg].getRequiredAttributes()
         print(req_attrs)
 
     def help_attributes(self):
@@ -457,5 +466,4 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == "__main__":
-    models.initModelsAndStorage()
     HBNBCommand().cmdloop()

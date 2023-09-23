@@ -23,13 +23,13 @@ class DBStorage:
             f'mysql+mysqldb://{user}:{passwd}@{host}/{db}', pool_pre_ping=True)
 
         if (environ.get('HBNB_ENV') == 'test'):
-            Base = models.injector['Base']
+            Base = models.classes['Base']
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Return the list of objects of (optional one type of) class."""
         if cls is None:
-            classes = models.injector.classes.values()
+            classes = models.classes.values()
             all_obj = {}
             for iclass in classes:
                 query_result = self.__session.query(iclass).all()
@@ -38,7 +38,7 @@ class DBStorage:
             return all_obj
 
         if (type(cls) == str):
-            cls = models.injector[cls]
+            cls = models.classes[cls]
 
         result = self.__session.query(cls).all()
         return {obj.objectKey: obj for obj in result}
@@ -58,10 +58,10 @@ class DBStorage:
 
     def reload(self):
         """Create all tables in the database"""
-        Base = models.injector['Base']
+        Base = models.classes['Base']
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(
-            bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
         # to make Session thread-safe
         Session = scoped_session(session_factory)
         self.__session = Session()
