@@ -34,7 +34,7 @@
 	vertical-align: middle;
 	height: 100%;
 	float: left;
-    width: 25%;
+	width: 25%;
 
 	line-height: 20px;
 }
@@ -52,9 +52,12 @@
 	border: 1px solid #DDDDDD;
 	border-radius: 4px;
 
-	height: 300px;
+	max-height: 300px;
 	overflow-y: scroll;
+	opacity: 0.99;
 }
+
+
 
 .locations:hover .popover {
 	display: inline-block;
@@ -72,9 +75,6 @@ ul {
 	list-style-type: none;
 	padding: 0px;
 	padding-bottom: 20px;
-}
-
-li {
 }
 
 h2 {
