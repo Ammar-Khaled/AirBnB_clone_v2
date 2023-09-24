@@ -3,15 +3,6 @@
 import cmd
 import sys
 import models
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from models import tables
-from models import classes
 
 
 def read_next_string_token(line):
@@ -466,4 +457,5 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == "__main__":
+    # models.initModelsAndStorage()
     HBNBCommand().cmdloop()

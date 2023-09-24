@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """This module defines a class to manage db storage for hbnb clone."""
 from sqlalchemy import create_engine
-from os import environ
 from sqlalchemy.orm import sessionmaker, scoped_session
 import models
+from models.base_model import Base, BaseModel
+from models.utils.consts import HBNB_ENV, DB_USER, DB_PWD, DB_NAME, DB_HOST
 
 
 class DBStorage:
@@ -14,25 +15,21 @@ class DBStorage:
     def __init__(self):
         """Create the db engine."""
 
-        user = environ.get('HBNB_MYSQL_USER')
-        passwd = environ.get('HBNB_MYSQL_PWD')
-        host = environ.get('HBNB_MYSQL_HOST')
-        db = environ.get('HBNB_MYSQL_DB')
-
         self.__engine = create_engine(
-            f'mysql+mysqldb://{user}:{passwd}@{host}/{db}', pool_pre_ping=True)
+            'mysql+mysqldb://{}:{}@{}/{}'.format(
+                DB_USER, DB_PWD, DB_HOST, DB_NAME
+            ), pool_pre_ping=True)
 
-        if (environ.get('HBNB_ENV') == 'test'):
-            Base = models.classes['Base']
+        if (HBNB_ENV == 'test'):
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Return the list of objects of (optional one type of) class."""
         if cls is None:
-            classes = models.classes.values()
+            classes = [models.classes[table] for table in models.tables]
             all_obj = {}
-            for iclass in classes:
-                query_result = self.__session.query(iclass).all()
+            for clsType in classes:
+                query_result = self.__session.query(clsType).all()
                 for obj in query_result:
                     all_obj[obj.objectKey] = obj
             return all_obj
@@ -58,14 +55,16 @@ class DBStorage:
 
     def reload(self):
         """Create all tables in the database"""
-        Base = models.classes['Base']
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
+        session_factory = sessionmaker(
+            bind=self.__engine, expire_on_commit=False)
         # to make Session thread-safe
-        Session = scoped_session(session_factory)
-        self.__session = Session()
+        Scope = scoped_session(session_factory)
+        self.__session = Scope()
 
     def close(self):
-        """Close the session."""
-        self.__session.close()
+        """Closes storage"""
+        self.__session.__class__.close(self.__session)
+        self.reload()
+        # if self.__session is Session and self.__session is not None:
+        #     self.__session.close()
