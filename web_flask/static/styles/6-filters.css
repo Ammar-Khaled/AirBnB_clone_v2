@@ -18,6 +18,17 @@
 	border-right: 1px solid #DDDDDD;
 }
 
+.amenities {
+	display: inline;
+	vertical-align: middle;
+	float: left;
+	height: 100%;
+	width: 25%;
+
+	line-height: 20px;
+	border-right: 1px solid #DDDDDD;
+}
+
 .filter_amenities {
 	display: inline;
 	vertical-align: middle;
@@ -41,11 +52,15 @@
 	border: 1px solid #DDDDDD;
 	border-radius: 4px;
 
-	max-height: 300px;
-	overflow-y: auto;
+	height: 300px;
+	overflow-y: scroll;
 }
 
 .locations:hover .popover {
+	display: inline-block;
+}
+
+.amenities:hover .popover {
 	display: inline-block;
 }
 
@@ -101,4 +116,8 @@ button {
 
 button:hover {
 	opacity: 90%;
+}
+
+.locations ul li ul li {
+	padding-left: 40px;
 }

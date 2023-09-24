@@ -23,11 +23,13 @@ def teardown_session(exception):
 
 @app.route("/hbnb_filters", strict_slashes=False)
 def hbnb_filters():
+    """ Displays an HTML page like 6-index.html """
     states_list = storage.all(State).values()
     amenities_list = storage.all(Amenity).values()
+    print(amenities_list)
     return render_template('10-hbnb_filters.html', states_list=states_list,
                            amenities_list=amenities_list)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
