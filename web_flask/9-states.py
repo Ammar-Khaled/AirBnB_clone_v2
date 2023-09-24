@@ -35,7 +35,8 @@ def state(id):
     for state in states_list:
         if state.id == id:
             return render_template('9-states.html', state=state)
-    return render_template('9-states.html'), 404
+
+    return render_template('9-states.html', state=None)
 
 if __name__ == '__main__':
     app.run()
