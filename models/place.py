@@ -52,10 +52,12 @@ class Place(BaseModel, Base):
 
             return place_reviews
 
+        
         @property
         def amenities(self):
             """Get a list of Amenity instances for the current place."""
-            return self.amenity_ids
+            Amenity = models.classes['Amenity']
+            return [models.storage.get(Amenity, amenity_id) for amenity_id in self.amenity_ids]
 
         @amenities.setter
         def amenities(self, new_amenity):
