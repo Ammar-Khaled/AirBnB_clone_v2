@@ -32,7 +32,7 @@ class Place(BaseModel, Base):
                             default=0, nullable=False)
     latitude = Column('latitude', Float, nullable=True)
     longitude = Column('longitude', Float, nullable=True)
-
+    amenity_ids = []
 
     if (environ.get('HBNB_TYPE_STORAG') == 'db'):
         reviews = relationship('Review', cascade='all, delete, delete-orphan',
@@ -44,7 +44,7 @@ class Place(BaseModel, Base):
         def __init__(self, *args, **kwargs):
             """initializes Place"""
             super().__init__(*args, **kwargs)
-            self.amenity_ids = []
+
         
         @property
         def reviews(self):
